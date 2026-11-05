@@ -1,0 +1,18 @@
+# 站点私有清单：含内网 IP / 路径，永不入库
+references/hosts.local.md
+hosts.local.md
+
+# 凭证与本地配置
+.env
+.env.*
+*.local
+secrets.*
+
+# 运行产物
+*.log
+*.png
+*.tmp
+
+# 系统文件
+.DS_Store
+Thumbs.db
