@@ -34,19 +34,27 @@ Git Bash / macOS / Linux：
 
 ```bash
 git clone --depth 1 https://github.com/Object92/sunlogin-remote-ops.git /tmp/sro \
-  && rm -rf ~/.workbuddy/skills/sunlogin-remote-ops \
-  && cp -r /tmp/sro ~/.workbuddy/skills/sunlogin-remote-ops \
-  && rm -rf ~/.workbuddy/skills/sunlogin-remote-ops/.git
+  && mkdir -p ~/.workbuddy/skills/sunlogin-remote-ops \
+  && cp -r /tmp/sro/. ~/.workbuddy/skills/sunlogin-remote-ops/ \
+  && rm -rf ~/.workbuddy/skills/sunlogin-remote-ops/.git /tmp/sro
 ```
+
+这份写法是**合并拷贝**，不会删掉你已有的 `references/hosts.local.md`（升级时尤其重要）。
 
 Windows PowerShell：
 
 ```powershell
 git clone --depth 1 https://github.com/Object92/sunlogin-remote-ops.git "$env:TEMP\sro"; `
-New-Item -ItemType Directory -Force "$env:USERPROFILE\.workbuddy\skills" | Out-Null; `
-Remove-Item "$env:USERPROFILE\.workbuddy\skills\sunlogin-remote-ops" -Recurse -Force -ErrorAction SilentlyContinue; `
-Copy-Item "$env:TEMP\sro" "$env:USERPROFILE\.workbuddy\skills\sunlogin-remote-ops" -Recurse; `
-Remove-Item "$env:USERPROFILE\.workbuddy\skills\sunlogin-remote-ops\.git" -Recurse -Force
+New-Item -ItemType Directory -Force "$env:USERPROFILE\.workbuddy\skills\sunlogin-remote-ops" | Out-Null; `
+Copy-Item "$env:TEMP\sro\*" "$env:USERPROFILE\.workbuddy\skills\sunlogin-remote-ops" -Recurse -Force; `
+Remove-Item "$env:USERPROFILE\.workbuddy\skills\sunlogin-remote-ops\.git" -Recurse -Force -ErrorAction SilentlyContinue; `
+Remove-Item "$env:TEMP\sro" -Recurse -Force
+```
+
+自检：
+
+```bash
+head -6 ~/.workbuddy/skills/sunlogin-remote-ops/SKILL.md
 ```
 
 ### 方式二：skills CLI（多 Agent 环境通用）
@@ -96,6 +104,15 @@ sunlogin-remote-ops/
 ├── LICENSE
 └── .gitignore                    # 忽略 hosts.local.md，防止内网信息进版本库
 ```
+
+## 常见安装问题
+
+| 报错 | 原因 | 解决 |
+|---|---|---|
+| `schannel: ... CRYPT_E_NO_REVOCATION_CHECK` | 公司代理/防火墙下无法校验证书吊销状态（Windows 默认走 schannel） | `git config --global http.schannelCheckRevoke false`，或临时 `git -c http.schannelCheckRevoke=false clone ...` |
+| `fatal: unable to access ... Could not resolve host` | 没走代理 | 设置 `HTTPS_PROXY`，或 `git config --global http.proxy http://127.0.0.1:<port>` |
+| 装完了 Agent 却不认 | 装错目录 | WorkBuddy 读 `~/.workbuddy/skills/`；`skills` CLI 默认放 `.agents/skills/`，两者不通用 |
+| `npx` 卡住不动 | 首次下载包 | 加 `-y` 跳过确认；网络慢可先 `npm i -g skills` |
 
 ## 关于安全
 
