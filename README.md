@@ -61,7 +61,14 @@ npx -y skills add Object92/sunlogin-remote-ops -g -s sunlogin-remote-ops -y
 npx -y skills add Object92/sunlogin-remote-ops -l
 ```
 
-> 两种方式的区别：方式一固定装到 `~/.workbuddy/skills/`，对 WorkBuddy 生效；方式二由 `skills` CLI 决定落到哪个 Agent 目录（Claude Code、Cursor 等），支持多 Agent 时会自动链接。
+> **实测行为**：`skills` CLI 会把文件放进 `.agents/skills/<name>/`，再软链到各个 Agent 自己的目录（Claude Code、Copilot 等）。它**不一定写进 `~/.workbuddy/skills/`**——那是 WorkBuddy 的扫描路径。所以：
+>
+> - 给 **Claude Code / Cursor / Copilot** 等环境用 → 方式二更省事；
+> - 给 **WorkBuddy** 用 → 用方式一，或装完补一条软链：
+>
+> ```bash
+> ln -s "$HOME/.agents/skills/sunlogin-remote-ops" "$HOME/.workbuddy/skills/sunlogin-remote-ops"
+> ```
 
 ## 使用
 
