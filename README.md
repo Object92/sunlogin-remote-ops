@@ -105,6 +105,27 @@ sunlogin-remote-ops/
 └── .gitignore                    # 忽略 hosts.local.md，防止内网信息进版本库
 ```
 
+## 让 Agent 自己装好（复制这段给 WorkBuddy）
+
+新电脑上不想手动敲命令，就把下面整段贴进 WorkBuddy 的对话框（Agent 模式），它会自己装、自己检查：
+
+```text
+请帮我安装并配置「向日葵远程接管」skill，装完做一次自检。
+
+1. 从 https://github.com/Object92/sunlogin-remote-ops 安装：按该仓库 README 的「安装 → 方式一」执行（合并拷贝那种写法，不要用 rm -rf 覆盖目录）。
+2. 确认安装结果：~/.workbuddy/skills/sunlogin-remote-ops/SKILL.md 存在，references/ 下有 cli-cookbook.md 和 hosts.example.md。
+3. 检查 node、npm、awesun-cli 是否可用；缺 awesun-cli 就执行 npm install -g @aweray/awesun-cli。
+4. 执行 awesun-cli login status。如果显示未登录，改用 awesun-cli login --url 把登录链接给我，我扫码后再继续。
+5. 执行 awesun-cli device ls -o json，确认能列出设备。
+6. 每一步的真实输出都贴给我，失败就说失败，不要假设成功、不要跳过验证。
+```
+
+装完之后要真正连机器，再发一句（识别码和验证码由对方提供）：
+
+```text
+向日葵识别码 <9位数字>，验证码 <6位>，请连上去截一张图确认桌面可见，然后断开。
+```
+
 ## 常见安装问题
 
 | 报错 | 原因 | 解决 |
